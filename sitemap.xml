@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.langr.top/2020/04/23/hello-world/</loc>
+    
+    <lastmod>2020-04-29T03:12:57.432Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.langr.top/2020/04/28/python_decorator/</loc>
+    
+    <lastmod>2020-04-29T03:10:24.344Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.langr.top/2020/04/23/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/</loc>
     
     <lastmod>2020-04-23T09:14:29.715Z</lastmod>
@@ -33,13 +47,6 @@
     <loc>https://www.langr.top/tags/index.html</loc>
     
     <lastmod>2020-04-23T02:22:21.220Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.langr.top/2020/04/23/hello-world/</loc>
-    
-    <lastmod>2020-04-22T14:37:02.207Z</lastmod>
     
   </url>
   
