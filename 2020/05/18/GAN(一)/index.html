@@ -36,7 +36,7 @@
 <meta property="og:image" content="http://q96n545no.bkt.clouddn.com/FmfEfocKAQRRR1ZBrb8xjkQY-u50">
 <meta property="og:image" content="http://q96n545no.bkt.clouddn.com/Fqwoici1y6APYM7vvfjJJ5YatVrM">
 <meta property="article:published_time" content="2020-05-18T09:25:17.748Z">
-<meta property="article:modified_time" content="2020-05-18T15:09:28.026Z">
+<meta property="article:modified_time" content="2020-05-18T15:17:59.119Z">
 <meta property="article:author" content="Chai Lang">
 <meta property="article:tag" content="nerual network, PyTorch">
 <meta name="twitter:card" content="summary">
@@ -229,7 +229,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-05-18 17:25:17 / 修改时间：23:09:28" itemprop="dateCreated datePublished" datetime="2020-05-18T17:25:17+08:00">2020-05-18</time>
+              <time title="创建时间：2020-05-18 17:25:17 / 修改时间：23:17:59" itemprop="dateCreated datePublished" datetime="2020-05-18T17:25:17+08:00">2020-05-18</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -313,8 +313,7 @@
 <p>通过训练$D$，最大化概率区分数据来自$p_{data}$还是$p_g$(显然地，$p_{data}$和$p_g$中的数据都应该进入$D$中进行鉴别)，同时训练$G$来最小化$\log(1-D(G(z)))$</p>
 <p><strong>注：</strong>至于该目标函数是怎么来的，还没有看到一个比较认可的说法。要再好好查查！</p>
 <h3 id="训练策略"><a href="#训练策略" class="headerlink" title="训练策略"></a>训练策略</h3><p><img src="http://q96n545no.bkt.clouddn.com/FlI7r4tybeAoLXD2nsjesfWQ4VTs" alt=""><br>Figure 1可得好好看明白，因为它描述了GAN的一个训练过程。<br>下面给出GAN算法<br><img src="http://q96n545no.bkt.clouddn.com/FmfEfocKAQRRR1ZBrb8xjkQY-u50" alt=""></p>
-<p>##证明目标函数收敛</p>
-<p>此部分需要证明GAN中的目标函数是收敛的，即是可以达到最优解的。为什么要证明目标函数是收敛的？因为该目标函数最大最小优化问题，可能不存在最优解，故需要证明是收敛的。</p>
+<h2 id="证明目标函数收敛"><a href="#证明目标函数收敛" class="headerlink" title="证明目标函数收敛"></a>证明目标函数收敛</h2><p>此部分需要证明GAN中的目标函数是收敛的，即是可以达到最优解的。为什么要证明目标函数是收敛的？因为该目标函数最大最小优化问题，可能不存在最优解，故需要证明是收敛的。</p>
 <p>先证明存在最有鉴别器$D$,</p>
 <p>知道<br>\begin{equation}<br>V(D,G)=\int_x [p_{data}(x)\log D(x)+p_g(x)\log(1-D(x))]dx<br>\end{equation}</p>
 <p>现在，先考虑$\forall a， b$, $a\log x+b\log(1-x)$，有最大值当$x=\dfrac{a}{a+b}$时。再回到公式（2），$V(D,G)$也有最大值存在，当$D=D_G^*=\dfrac{p_{data}(x)}{p_{data}(x)+p_g(x)}$，我们知道最优鉴别器应该处处$D(x)=\dfrac{1}{2}$，因此$p_{data}(x)=p_g(x)$时，鉴别器$D$达到最优。</p>
@@ -448,7 +447,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GAN理论推导"><span class="nav-number">2.</span> <span class="nav-text">GAN理论推导</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一些概念和约定"><span class="nav-number">2.1.</span> <span class="nav-text">一些概念和约定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#理论部分"><span class="nav-number">2.2.</span> <span class="nav-text">理论部分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#训练策略"><span class="nav-number">2.2.1.</span> <span class="nav-text">训练策略</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GAN实现（PyTorch）"><span class="nav-number">3.</span> <span class="nav-text">GAN实现（PyTorch）</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GAN理论推导"><span class="nav-number">2.</span> <span class="nav-text">GAN理论推导</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一些概念和约定"><span class="nav-number">2.1.</span> <span class="nav-text">一些概念和约定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#理论部分"><span class="nav-number">2.2.</span> <span class="nav-text">理论部分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#训练策略"><span class="nav-number">2.2.1.</span> <span class="nav-text">训练策略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#证明目标函数收敛"><span class="nav-number">2.3.</span> <span class="nav-text">证明目标函数收敛</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GAN实现（PyTorch）"><span class="nav-number">3.</span> <span class="nav-text">GAN实现（PyTorch）</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
