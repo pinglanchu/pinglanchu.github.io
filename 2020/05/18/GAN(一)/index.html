@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+<meta name="baidu-site-verification" content="JPgv6Vmgk8" />
+<meta name="google-site-verification" content="N4NI1bKBXu5FBPayYo3bhX4NhjpX-7AgH6iWxQ0_k3A" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo.png">
+  <link rel="mask-icon" href="/images/logo.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|source code pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.langr.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"./public/search.xml"};
+  </script>
+
+  <meta name="description" content="前言2014年，Ian Goodfellow等人提出一种全新神经网络训练模型–生成对抗模型(Generative Adversarial Network,GAN)。GAN是近年来最火热的无监督学习算法，在此基础上，许多研究者对其不断进行改进，衍生出很多相应的算法，也逐渐将其应用到半监督和有监督学习中。该系列博客主要记录从GAN的理论推导，编程实现和将GAN应用到半监督学习中。这第一篇文章就先将GA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="生成对抗网络（一）">
+<meta property="og:url" content="https://www.langr.top/2020/05/18/GAN(%E4%B8%80)/index.html">
+<meta property="og:site_name" content="ChaiLang&#39;s Blog">
+<meta property="og:description" content="前言2014年，Ian Goodfellow等人提出一种全新神经网络训练模型–生成对抗模型(Generative Adversarial Network,GAN)。GAN是近年来最火热的无监督学习算法，在此基础上，许多研究者对其不断进行改进，衍生出很多相应的算法，也逐渐将其应用到半监督和有监督学习中。该系列博客主要记录从GAN的理论推导，编程实现和将GAN应用到半监督学习中。这第一篇文章就先将GA">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://q96n545no.bkt.clouddn.com/Fl6xdArNqoypHvyOAER2DtWCf4c6">
+<meta property="og:image" content="http://q96n545no.bkt.clouddn.com/FlI7r4tybeAoLXD2nsjesfWQ4VTs">
+<meta property="og:image" content="http://q96n545no.bkt.clouddn.com/FmfEfocKAQRRR1ZBrb8xjkQY-u50">
+<meta property="og:image" content="http://q96n545no.bkt.clouddn.com/Fqwoici1y6APYM7vvfjJJ5YatVrM">
+<meta property="article:published_time" content="2020-05-18T09:25:17.748Z">
+<meta property="article:modified_time" content="2020-05-18T15:09:28.026Z">
+<meta property="article:author" content="Chai Lang">
+<meta property="article:tag" content="nerual network, PyTorch">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://q96n545no.bkt.clouddn.com/Fl6xdArNqoypHvyOAER2DtWCf4c6">
+
+<link rel="canonical" href="https://www.langr.top/2020/05/18/GAN(%E4%B8%80)/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>生成对抗网络（一） | ChaiLang's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">ChaiLang's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-books">
+
+    <a href="/books/" rel="section"><i class="fa fa-book fa-fw"></i>看的书</a>
+
+  </li>
+        <li class="menu-item menu-item-travel">
+
+    <a href="/travel/" rel="section"><i class="fa fa-plane fa-fw"></i>走的路</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.langr.top/2020/05/18/GAN(%E4%B8%80)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Chai Lang">
+      <meta itemprop="description" content="便胜却人间无数">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ChaiLang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          生成对抗网络（一）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-05-18 17:25:17 / 修改时间：23:09:28" itemprop="dateCreated datePublished" datetime="2020-05-18T17:25:17+08:00">2020-05-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Deep-learning/" itemprop="url" rel="index"><span itemprop="name">Deep learning</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/05/18/GAN(%E4%B8%80)/" class="post-meta-item leancloud_visitors" data-flag-title="生成对抗网络（一）" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/05/18/GAN(%E4%B8%80)/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/05/18/GAN(%E4%B8%80)/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>2014年，Ian Goodfellow等人提出一种全新神经网络训练模型–生成对抗模型(Generative Adversarial Network,GAN)。GAN是近年来最火热的无监督学习算法，在此基础上，许多研究者对其不断进行改进，衍生出很多相应的算法，也逐渐将其应用到半监督和有监督学习中。该系列博客主要记录从GAN的理论推导，编程实现和将GAN应用到半监督学习中。这第一篇文章就先将GAN的理论知识和实现简单介绍下。</p>
+<a id="more"></a>
+
+<h1 id="GAN理论推导"><a href="#GAN理论推导" class="headerlink" title="GAN理论推导"></a>GAN理论推导</h1><p><img src="http://q96n545no.bkt.clouddn.com/Fl6xdArNqoypHvyOAER2DtWCf4c6" alt="原文abstract截图"><br>首先，需要知道的是生成对抗网络的设计是为了estimating generative model，而”adversarial process”是为了完成这一任务的辅助手段。<a href="https://arxiv.org/abs/1406.2661" target="_blank" rel="noopener">原论文</a>摘要中对GAN的设计思想、大致的训练过程都做了很好的说明。下面就好好学习学习GAN的具体理论部分。</p>
+<h2 id="一些概念和约定"><a href="#一些概念和约定" class="headerlink" title="一些概念和约定"></a>一些概念和约定</h2><p>生成对抗网络主要又两个重要的部分组成：</p>
+<ul>
+<li>生成器（Generator):通过不断学习，生成与真实数据相仿的“假数据”，其目标是要成功“欺骗”鉴别器（Discriminator）</li>
+<li>鉴别器（Discriminator）:尽可能将真实数据与Generator生成的“假数据”区分开来。</li>
+</ul>
+<p>生成器与鉴别器相辅相成，两者之间不断对抗的过程，也是二者之间不断学习的过程。结束对抗过程之后，理想情况是Generator能够生成与真实数据分布高度吻合的数据，而Discriminator已经完全不能区分出真实数据与“假数据”。因此，在原文中，作者也提到了”D equal to $\dfrac{1}{2}$ everywhere”。</p>
+<ul>
+<li>$p_g$:Generator通过真实数据$x$生成的分布</li>
+<li>$p_{data}$:真实数据分布</li>
+</ul>
+<h2 id="理论部分"><a href="#理论部分" class="headerlink" title="理论部分"></a>理论部分</h2><p>首先直接引入GAN的目标函数，然后我们再对其进行简单的说明，<br>\begin{equation}<br>\min_{G}\max_{D}V(D,G)=\mathop{\mathbb{E}}\limits_{x\sim p_{data}(x)}[\log D(x)]+\mathop{\mathbb{E}}\limits_{z\sim p_z(z)}[\log(1-D(G(z)))].<br>\end{equation}</p>
+<p>其中，$p_z(z)$是预先定义好的噪声分布，$G(z;\theta_g)$是一个参数为$\theta_g$的可微多层感知器，$D(x;\theta_d)$也是一个多层感知器，其输出为一个标量，$D(x)$表示了$x$来自真实数据而不是$p_g$的概率。</p>
+<p>通过训练$D$，最大化概率区分数据来自$p_{data}$还是$p_g$(显然地，$p_{data}$和$p_g$中的数据都应该进入$D$中进行鉴别)，同时训练$G$来最小化$\log(1-D(G(z)))$</p>
+<p><strong>注：</strong>至于该目标函数是怎么来的，还没有看到一个比较认可的说法。要再好好查查！</p>
+<h3 id="训练策略"><a href="#训练策略" class="headerlink" title="训练策略"></a>训练策略</h3><p><img src="http://q96n545no.bkt.clouddn.com/FlI7r4tybeAoLXD2nsjesfWQ4VTs" alt=""><br>Figure 1可得好好看明白，因为它描述了GAN的一个训练过程。<br>下面给出GAN算法<br><img src="http://q96n545no.bkt.clouddn.com/FmfEfocKAQRRR1ZBrb8xjkQY-u50" alt=""></p>
+<p>##证明目标函数收敛</p>
+<p>此部分需要证明GAN中的目标函数是收敛的，即是可以达到最优解的。为什么要证明目标函数是收敛的？因为该目标函数最大最小优化问题，可能不存在最优解，故需要证明是收敛的。</p>
+<p>先证明存在最有鉴别器$D$,</p>
+<p>知道<br>\begin{equation}<br>V(D,G)=\int_x [p_{data}(x)\log D(x)+p_g(x)\log(1-D(x))]dx<br>\end{equation}</p>
+<p>现在，先考虑$\forall a， b$, $a\log x+b\log(1-x)$，有最大值当$x=\dfrac{a}{a+b}$时。再回到公式（2），$V(D,G)$也有最大值存在，当$D=D_G^*=\dfrac{p_{data}(x)}{p_{data}(x)+p_g(x)}$，我们知道最优鉴别器应该处处$D(x)=\dfrac{1}{2}$，因此$p_{data}(x)=p_g(x)$时，鉴别器$D$达到最优。</p>
+<p>接下来就要证明当且仅当$p_{data}(x)=p_g(x)$时，$C(G)=\max V(D,G)$达到最小值。</p>
+<p>$\stackrel{充分性}{\Longrightarrow}$   当$p_{data}(x)=p_g(x)$时，<br>\begin{equation}<br>\begin{split}<br>C(G)&amp;=\int_x p_{data}(x)\log(\dfrac{1}{2})+p_{g}(x)\log(\dfrac{1}{2})dx\<br>&amp;=\log(\dfrac{1}{2})(1+1)\<br>&amp;=-\log 4<br>\end{split}<br>\end{equation}</p>
+<p>$\stackrel{必要性}{\Longleftarrow}$</p>
+<p>$$<br>\begin{split}<br>C(G)&amp;=&amp;\int_x p_{data}(x)\log\dfrac{p_{data}(x)}{p_{data}(x)+p_g(x)}+p_g(x)\log\dfrac{p_{g}(x)}{p_{data}(x)+p_g(x)}\\<br>&amp;=&amp;\int_x(\log2-\log2)p_{data}(x)+p_{data}(x)\log\dfrac{p_{data}(x)}{p_{data}(x)+p_g(x)}\\<br>&amp;&amp;+(\log2-\log2)p_g(x)+p_{g}(x)\log\dfrac{p_{g}(x)}{p_{data}(x)+p_g(x)}dx\\<br>&amp;=&amp;-\log 2\int_x(p_{data}(x)+p_g(x))dx+\int_x p_{data}(x)(\log 2+\log\dfrac{p_{data}(x)}{p_{data}(x)+p_g(x)})dx\\<br>&amp;&amp;+\int_xp_g(x)(\log2+\log(1-\dfrac{p_{data}(x)}{p_{data}(x)+p_g(x)}))dx\\<br>&amp;=&amp;-\log4+\int_xp_{data}(x)\log\dfrac{p_{data}(x)}{(p_{data}(x)+p_g(x))/2}dx\\<br>&amp;&amp;+\int_xp_g(x)\log\dfrac{p_g(x)}{(p_{data}(x)+p_g(x))/2}dx\\<br>&amp;=&amp;-\log4+KL(p_{data}||\dfrac{p_{data}(x)+p_g(x)}{2})+KL(p_g||\dfrac{p_{data}(x)+p_g(x)}{2})\\<br>&amp;=&amp;-\log4+2JSD(p_{data}(x)||p_g(x))\geq -\log 4<br>\end{split}<br>$$</p>
+<p>当且仅当$p_{data}(x)=p_g(x)$时，取最小值$-\log 4$，证毕。</p>
+<h1 id="GAN实现（PyTorch）"><a href="#GAN实现（PyTorch）" class="headerlink" title="GAN实现（PyTorch）"></a>GAN实现（PyTorch）</h1><p>到目前为止，将GAN的整个理论部分过了一遍。下面开始用PyTorch来简单实现下GAN。<br>首先导入需要的库，然后构造生成器和鉴别器</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">import</span> torch.optim <span class="keyword">as</span> optim</span><br><span class="line"><span class="keyword">import</span> matplotlib.mlab <span class="keyword">as</span> mlab</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> scipy.stats <span class="keyword">import</span> norm</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Generator</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, input_size, hidden_size, output_size, f)</span>:</span></span><br><span class="line">        super(Generator, self).__init__()</span><br><span class="line">        self.map1 = nn.Linear(input_size, hidden_size)</span><br><span class="line">        self.map2 = nn.Linear(hidden_size, hidden_size)</span><br><span class="line">        self.map3 = nn.Linear(hidden_size, output_size)</span><br><span class="line">        self.f = f</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        x = self.map1(x)</span><br><span class="line">        x = self.f(x)</span><br><span class="line">        x = self.map2(x)</span><br><span class="line">        x = self.f(x)</span><br><span class="line">        x = self.map3(x)</span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Discriminator</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, input_size, hidden_size, output_size, f)</span>:</span></span><br><span class="line">        super(Discriminator, self).__init__()</span><br><span class="line">        self.map1 = nn.Linear(input_size, hidden_size)</span><br><span class="line">        self.map2 = nn.Linear(hidden_size, hidden_size)</span><br><span class="line">        self.map3 = nn.Linear(hidden_size, output_size)</span><br><span class="line">        self.f = f</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        x = self.f(self.map1(x))</span><br><span class="line">        x = self.f(self.map2(x))</span><br><span class="line">        <span class="keyword">return</span> self.f(self.map3(x))</span><br></pre></td></tr></tbody></table></figure>
+
+<p>下面对输入数据做简单处理</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">(name, preprocess, d_input_func) = (<span class="string">"Only 4 moments"</span>, <span class="keyword">lambda</span> data: get_moments(data), <span class="keyword">lambda</span> x: <span class="number">4</span>)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">extract</span><span class="params">(v)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> v.data.storage().tolist()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stats</span><span class="params">(d)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> [np.mean(d), np.std(d)]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_moments</span><span class="params">(d)</span>:</span></span><br><span class="line">    <span class="comment"># Return the first 4 moments of the data provided</span></span><br><span class="line">    mean = torch.mean(d)</span><br><span class="line">    diffs = d - mean</span><br><span class="line">    var = torch.mean(torch.pow(diffs, <span class="number">2.0</span>))</span><br><span class="line">    std = torch.pow(var, <span class="number">0.5</span>)</span><br><span class="line">    zscores = diffs / std</span><br><span class="line">    skews = torch.mean(torch.pow(zscores, <span class="number">3.0</span>)) <span class="comment"># 计算偏度</span></span><br><span class="line">    kurtoses = torch.mean(torch.pow(zscores, <span class="number">4.0</span>)) - <span class="number">3.0</span>  <span class="comment"># 计算峰度 excess kurtosis, should be 0 for Gaussian</span></span><br><span class="line">    final = torch.cat((mean.reshape(<span class="number">1</span>,), std.reshape(<span class="number">1</span>,), skews.reshape(<span class="number">1</span>,), kurtoses.reshape(<span class="number">1</span>,)))</span><br><span class="line">    <span class="keyword">return</span> final</span><br></pre></td></tr></tbody></table></figure>
+<p>接下来设置超参数并开始训练GAN</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line">data_mean = <span class="number">4</span></span><br><span class="line">data_stddev = <span class="number">1.25</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># Model parameters</span></span><br><span class="line">    g_input_size = <span class="number">1</span>      <span class="comment"># Random noise dimension coming into generator, per output vector</span></span><br><span class="line">    g_hidden_size = <span class="number">5</span>     <span class="comment"># Generator complexity</span></span><br><span class="line">    g_output_size = <span class="number">1</span>     <span class="comment"># Size of generated output vector</span></span><br><span class="line">    d_input_size = <span class="number">500</span>    <span class="comment"># Minibatch size - cardinality of distributions</span></span><br><span class="line">    d_hidden_size = <span class="number">10</span>    <span class="comment"># Discriminator complexity</span></span><br><span class="line">    d_output_size = <span class="number">1</span>     <span class="comment"># Single dimension for 'real' vs. 'fake' classification</span></span><br><span class="line">    minibatch_size = d_input_size</span><br><span class="line"></span><br><span class="line">    d_learning_rate = <span class="number">1e-3</span></span><br><span class="line">    g_learning_rate = <span class="number">1e-3</span></span><br><span class="line">    sgd_momentum = <span class="number">0.9</span></span><br><span class="line"></span><br><span class="line">    num_epochs = <span class="number">2000</span></span><br><span class="line">    print_interval = <span class="number">100</span></span><br><span class="line">    d_steps = <span class="number">20</span></span><br><span class="line">    g_steps = <span class="number">20</span></span><br><span class="line"></span><br><span class="line">    dfe, dre, ge = <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">    d_real_data, d_fake_data, g_fake_data = <span class="literal">None</span>, <span class="literal">None</span>, <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    discriminator_activation_function = torch.sigmoid <span class="comment"># 鉴别器激活函数</span></span><br><span class="line">    generator_activation_function = torch.tanh <span class="comment"># 生成器激活函数</span></span><br><span class="line"></span><br><span class="line">    d_sampler = get_distribution_sampler(data_mean, data_stddev)</span><br><span class="line">    gi_sampler = get_generator_input_sampler()</span><br><span class="line">    G = Generator(input_size=g_input_size,</span><br><span class="line">                  hidden_size=g_hidden_size,</span><br><span class="line">                  output_size=g_output_size,</span><br><span class="line">                  f=generator_activation_function)</span><br><span class="line">    D = Discriminator(input_size=d_input_func(d_input_size),</span><br><span class="line">                      hidden_size=d_hidden_size,</span><br><span class="line">                      output_size=d_output_size,</span><br><span class="line">                      f=discriminator_activation_function)</span><br><span class="line">    criterion = nn.BCELoss()  <span class="comment"># Binary cross entropy: http://pytorch.org/docs/nn.html#bceloss</span></span><br><span class="line">    d_optimizer = optim.SGD(D.parameters(), lr=d_learning_rate, momentum=sgd_momentum)</span><br><span class="line">    g_optimizer = optim.SGD(G.parameters(), lr=g_learning_rate, momentum=sgd_momentum)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> range(num_epochs):</span><br><span class="line">        <span class="keyword">for</span> d_index <span class="keyword">in</span> range(d_steps):</span><br><span class="line">            <span class="comment"># 1. Train D on real+fake</span></span><br><span class="line">            D.zero_grad()</span><br><span class="line"></span><br><span class="line">            <span class="comment">#  1A: Train D on real</span></span><br><span class="line">            d_real_data = torch.Tensor(d_sampler(d_input_size)) <span class="comment"># 从均值为4，标准差为1.25的正态分布中抽样500个样本作为real data</span></span><br><span class="line">            d_real_decision = D(preprocess(d_real_data)) <span class="comment"># 将该数据的均值，方差，偏度，峰度作为鉴别器输入</span></span><br><span class="line">            d_real_error = criterion(d_real_decision, torch.Tensor(torch.ones([<span class="number">1</span>,<span class="number">1</span>])))  <span class="comment"># ones = true</span></span><br><span class="line">            d_real_error.backward() <span class="comment"># compute/store gradients, but don't change params</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">#  1B: Train D on fake</span></span><br><span class="line">            d_gen_input = torch.Tensor(gi_sampler(minibatch_size, g_input_size))</span><br><span class="line">            d_fake_data = G(d_gen_input).detach()  <span class="comment"># detach to avoid training G on these labels</span></span><br><span class="line">            d_fake_decision = D(preprocess(d_fake_data.t()))</span><br><span class="line">            d_fake_error = criterion(d_fake_decision, torch.Tensor(torch.zeros([<span class="number">1</span>,<span class="number">1</span>])))  <span class="comment"># zeros = fake</span></span><br><span class="line">            d_fake_error.backward()</span><br><span class="line">            d_optimizer.step()     <span class="comment"># Only optimizes D's parameters; changes based on stored gradients from backward()</span></span><br><span class="line"></span><br><span class="line">            dre, dfe = extract(d_real_error)[<span class="number">0</span>], extract(d_fake_error)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> g_index <span class="keyword">in</span> range(g_steps):</span><br><span class="line">            <span class="comment"># 2. Train G on D's response (but DO NOT train D on these labels)</span></span><br><span class="line">            G.zero_grad()</span><br><span class="line"></span><br><span class="line">            gen_input = torch.Tensor(gi_sampler(minibatch_size, g_input_size))</span><br><span class="line">            g_fake_data = G(gen_input)</span><br><span class="line">            dg_fake_decision = D(preprocess(g_fake_data.t()))</span><br><span class="line">            g_error = criterion(dg_fake_decision, torch.Tensor(torch.ones([<span class="number">1</span>,<span class="number">1</span>])))  <span class="comment"># Train G to pretend it's genuine</span></span><br><span class="line"></span><br><span class="line">            g_error.backward()</span><br><span class="line">            g_optimizer.step()  <span class="comment"># Only optimizes G's parameters</span></span><br><span class="line">            ge = extract(g_error)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> epoch % print_interval == <span class="number">0</span>:</span><br><span class="line">            print(<span class="string">"Epoch %s: D (%s real_err, %s fake_err) G (%s err); Real Dist (%s),  Fake Dist (%s) "</span> %</span><br><span class="line">                  (epoch, dre, dfe, ge, stats(extract(d_real_data)), stats(extract(d_fake_data))))</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Plotting the generated distribution..."</span>)</span><br><span class="line">    values = extract(g_fake_data)</span><br><span class="line">    mu = np.mean(values)</span><br><span class="line">    sigma = np.std(values)</span><br><span class="line">    print(<span class="string">" Values: %s"</span> % (str(values)))</span><br><span class="line">    n, bins, patches = plt.hist(values, bins=<span class="number">100</span>, normed=<span class="number">1</span>)</span><br><span class="line">    y = norm.pdf(bins, mu, sigma)</span><br><span class="line">    plt.plot(bins, y, <span class="string">'r--'</span>)</span><br><span class="line">    plt.xlabel(<span class="string">'Value'</span>)</span><br><span class="line">    plt.ylabel(<span class="string">'probability'</span>)</span><br><span class="line">    plt.title(<span class="string">r'Histogram of Generated Distribution: $\mu={}$, $\sigma={}$'</span>.format(round(mu,<span class="number">2</span>), round(sigma,<span class="number">2</span>)))</span><br><span class="line">    plt.grid(<span class="literal">True</span>)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">train()</span><br></pre></td></tr></tbody></table></figure>
+<p>好，我们来看看最后训练出来的结果<br><img src="http://q96n545no.bkt.clouddn.com/Fqwoici1y6APYM7vvfjJJ5YatVrM" alt=""><br>可以看到，我们预先设置好的正态分布$\mu=4, \sigma=1.25$，通过GAN训练之后，生成器$G$从均匀分布中生成了$\mu=3.9, \sigma=1.24$的正态分布，这已经非常逼近真实分布$p_{data}(x)=N(4, 1.25)$。</p>
+<p>第一篇GAN记录就写到这里，下次学习了将GAN用于半监督学习之后再写。</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Chai Lang
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.langr.top/2020/05/18/GAN(%E4%B8%80)/" title="生成对抗网络（一）">https://www.langr.top/2020/05/18/GAN(一)/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/nerual-network-PyTorch/" rel="tag"># nerual network, PyTorch</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/28/python_decorator/" rel="prev" title="如何理解python中的装饰器">
+      <i class="fa fa-chevron-left"></i> 如何理解python中的装饰器
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GAN理论推导"><span class="nav-number">2.</span> <span class="nav-text">GAN理论推导</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一些概念和约定"><span class="nav-number">2.1.</span> <span class="nav-text">一些概念和约定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#理论部分"><span class="nav-number">2.2.</span> <span class="nav-text">理论部分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#训练策略"><span class="nav-number">2.2.1.</span> <span class="nav-text">训练策略</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GAN实现（PyTorch）"><span class="nav-number">3.</span> <span class="nav-text">GAN实现（PyTorch）</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Chai Lang"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Chai Lang</p>
+  <div class="site-description" itemprop="description">便胜却人间无数</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/pinglanchu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;pinglanchu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:clyihai_0919@163.com" title="E-Mail → mailto:clyihai_0919@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chai Lang</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">14k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">12 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : true,
+      appId      : 'KAXBmEezNmhe9IIqHXEEppMx-gzGzoHsz',
+      appKey     : '8z28scV449Sa1MmVMF3GhQyJ',
+      placeholder: "ヾﾉ≧∀≦)o快来评论一下吧!",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
