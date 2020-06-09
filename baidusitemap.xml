@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.langr.top/2020/06/09/%E6%96%91%E5%9B%BE/</loc>
+    <lastmod>2020-06-09</lastmod>
+  </url>  <url>
+    <loc>https://www.langr.top/2020/04/23/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/</loc>
+    <lastmod>2020-05-29</lastmod>
+  </url>  <url>
     <loc>https://www.langr.top/2020/05/18/GAN(%E4%B8%80)/</loc>
     <lastmod>2020-05-18</lastmod>
   </url>  <url>
@@ -9,8 +15,5 @@
   </url>  <url>
     <loc>https://www.langr.top/2020/04/23/hello-world/</loc>
     <lastmod>2020-04-29</lastmod>
-  </url>  <url>
-    <loc>https://www.langr.top/2020/04/23/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/</loc>
-    <lastmod>2020-04-23</lastmod>
   </url>
 </urlset>
