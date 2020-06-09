@@ -222,7 +222,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-06-09 10:26:28 / 修改时间：11:47:41" itemprop="dateCreated datePublished" datetime="2020-06-09T10:26:28+08:00">2020-06-09</time>
+              <time title="创建时间：2020-06-09 10:26:28 / 修改时间：11:53:33" itemprop="dateCreated datePublished" datetime="2020-06-09T10:26:28+08:00">2020-06-09</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -287,49 +287,14 @@
 <blockquote>
 <p>X: array-like or PIL image（数组或者是图片）<br>cmap: str or Colormap(颜色映射)<br>norm: Normalize(标准化到（0， 1）区间)<br>aspect: {‘equal’, ‘auto’} or float(控制轴的纵横比)<br>interpolation: str(插值方法)，可选为( ‘none’, ‘antialiased’, ‘nearest’, ‘bilinear’, ‘bicubic’, ‘spline16’, ‘spline36’, ‘hanning’, ‘hamming’, ‘hermite’, ‘kaiser’, ‘quadric’, ‘catrom’, ‘gaussian’, ‘bessel’, ‘mitchell’, ‘sinc’, ‘lanczos’.)<br>剩下的具体参数解释可参考<a href="https://matplotlib.org/3.2.1/api/_as_gen/matplotlib.pyplot.imshow.html" target="_blank" rel="noopener">文档解释</a></p>
 </blockquote>
-<h1 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h1><p><strong>使用nearest插值方法</strong><br>example 1.</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">arr = np.arange(<span class="number">10000</span>).reshape(<span class="number">100</span>, <span class="number">100</span>)</span><br><span class="line">plt.imshow(arr)</span><br><span class="line">plt.colorbar()</span><br><span class="line">plt.show()</span><br></pre></td></tr></tbody></table></figure>
-<p><img src="http://q96n545no.bkt.clouddn.com/FpovNmkYV1TTeoLladUAAuXK5qyp" alt=""></p>
-<p>example 2.</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">X = [[<span class="number">1</span>,<span class="number">2</span>],[<span class="number">3</span>,<span class="number">4</span>],[<span class="number">5</span>,<span class="number">6</span>]]  </span><br><span class="line">plt.imshow(X) </span><br><span class="line">plt.colorbar()</span><br><span class="line">plt.show()</span><br></pre></td></tr></tbody></table></figure>
-<p><img src="http://q96n545no.bkt.clouddn.com/Ft8vM4tRORXbTJMdyWj756eZrcu1" alt=""></p>
-<p>example 3.</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mean = [<span class="number">0</span>,<span class="number">0</span>]</span><br><span class="line">cov = [[<span class="number">0</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">0</span>]]</span><br><span class="line">x, y = np.random.multivariate_normal(mean, cov, <span class="number">10000</span>).T</span><br><span class="line"></span><br><span class="line">hist, xedges, yedges = np.histogram2d(x,y)</span><br><span class="line">X,Y = np.meshgrid(xedges,yedges)</span><br><span class="line">plt.imshow(hist, interpolation=<span class="string">'nearest'</span>,cmap=<span class="string">'rainbow'</span>)</span><br><span class="line">plt.grid(<span class="literal">True</span>)</span><br><span class="line">plt.colorbar()</span><br><span class="line">plt.show()</span><br></pre></td></tr></tbody></table></figure>
-<p><img src="http://q96n545no.bkt.clouddn.com/FnP2tMpzO-HUJKwGFAYVFEARR6co" alt=""></p>
-<p><strong>使用bilinear插值法</strong>(当然可选插值方法还有很多)<br>example 1. </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">arr = np.arange(<span class="number">10000</span>).reshape(<span class="number">100</span>, <span class="number">100</span>)</span><br><span class="line">plt.imshow(arr, interpolation=<span class="string">'bilinear'</span>)</span><br><span class="line">plt.colorbar()</span><br><span class="line">plt.show()</span><br></pre></td></tr></tbody></table></figure>
-
-<p><img src="http://q96n545no.bkt.clouddn.com/FoC6jZwTBWBNoktydUsRVGB6eCUB" alt=""></p>
-<p>example 2.</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">X = [[<span class="number">1</span>,<span class="number">2</span>],[<span class="number">3</span>,<span class="number">4</span>],[<span class="number">5</span>,<span class="number">6</span>]]  </span><br><span class="line">plt.imshow(X, interpolation=<span class="string">'bilinear'</span>) </span><br><span class="line">plt.colorbar()</span><br><span class="line">plt.show()</span><br></pre></td></tr></tbody></table></figure>
-<p><img src="http://q96n545no.bkt.clouddn.com/ForhUjY6iVTaT752LMK1ERsLYE00" alt=""></p>
-<p>example 3.</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mean = [<span class="number">0</span>,<span class="number">0</span>]</span><br><span class="line">cov = [[<span class="number">0</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">0</span>]]</span><br><span class="line">x, y = np.random.multivariate_normal(mean, cov, <span class="number">10000</span>).T</span><br><span class="line"></span><br><span class="line">hist, xedges, yedges = np.histogram2d(x,y)</span><br><span class="line">X,Y = np.meshgrid(xedges,yedges)</span><br><span class="line">plt.imshow(hist, interpolation=<span class="string">'bilinear'</span>,cmap=<span class="string">'rainbow'</span>)</span><br><span class="line">plt.grid(<span class="literal">True</span>)</span><br><span class="line">plt.colorbar()</span><br><span class="line">plt.show()</span><br></pre></td></tr></tbody></table></figure>
-<p><img src="http://q96n545no.bkt.clouddn.com/Fr6fTE4sKtciMDUwdzPwwvbRbx2F" alt=""></p>
-<p>可以对比使用或者不使用插值方法时生成图片之间的区别。以上是比较简单的示例，例如颜色的渐变，数值的标准化等都没有涉及到，需用用到时可详细参看<a href="https://matplotlib.org/3.2.1/api/_as_gen/matplotlib.pyplot.imshow.html" target="_blank" rel="noopener">文档解释</a></p>
-<h1 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h1><p>针对上面两个example 3. 我们也可以使用<code>hist2d</code>函数(当然还有其他的实现，例如<code>pcolor</code>,<code>matshow</code>函数等)</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mean = [<span class="number">0</span>,<span class="number">0</span>]</span><br><span class="line">cov = [[<span class="number">0</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">0</span>]]</span><br><span class="line">x, y = np.random.multivariate_normal(mean, cov, <span class="number">10000</span>).T</span><br><span class="line">plt.hist2d(x, y, bins=<span class="number">50</span>, cmap=<span class="string">'coolwarm'</span>)</span><br><span class="line">plt.colorbar()</span><br><span class="line">plt.grid()</span><br><span class="line">plt.show()</span><br></pre></td></tr></tbody></table></figure>
-<p><img src="http://q96n545no.bkt.clouddn.com/FpzJ8P8BkmAUMGvi6OJd7ZOWwtvv" alt=""></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>python中生成热图的主要方法为imshow()函数，我们看到同样还有很多其他的方法可以实现，他们可以满足不同的画图需求，本文中涉及的函数主要是<code>matplotlib</code>库中的，同样在<code>seaborn</code>中也有热图函数，比如<code>heatmap</code>，本文中介绍的热图函数已经能够满足大多数时候的需求。</p>
-<script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/06/09/%E6%96%91%E5%9B%BE/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
