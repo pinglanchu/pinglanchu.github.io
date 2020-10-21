@@ -24,18 +24,18 @@
     var CONFIG = {"hostname":"www.langr.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"./public/search.xml"};
   </script>
 
-  <meta name="description" content="tikz的一些画图例子前言在此记录一些tikz绘制图形的例子，以方便后续使用。 例子1代码如下： 123456789101112131415161718192021222324252627282930\documentclass{article}\usepackage{tikz}\begin{document}\usetikzlibrary{intersections}\begin{tikzpic">
+  <meta name="description" content="tikz的一些画图例子前言在此记录一些tikz绘制图形的例子，以方便后续使用。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="一些tikz绘图例子">
 <meta property="og:url" content="https://www.langr.top/2020/10/21/%E4%B8%80%E4%BA%9Btikz%E4%BE%8B%E5%AD%90/index.html">
 <meta property="og:site_name" content="ChaiLang&#39;s Blog">
-<meta property="og:description" content="tikz的一些画图例子前言在此记录一些tikz绘制图形的例子，以方便后续使用。 例子1代码如下： 123456789101112131415161718192021222324252627282930\documentclass{article}\usepackage{tikz}\begin{document}\usetikzlibrary{intersections}\begin{tikzpic">
+<meta property="og:description" content="tikz的一些画图例子前言在此记录一些tikz绘制图形的例子，以方便后续使用。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://www.langr.top/images/example1.png">
 <meta property="og:image" content="https://www.langr.top/images/example2.png">
 <meta property="og:image" content="https://www.langr.top/images/example3.png">
 <meta property="article:published_time" content="2020-10-21T11:28:38.249Z">
-<meta property="article:modified_time" content="2020-10-21T11:36:02.042Z">
+<meta property="article:modified_time" content="2020-10-21T11:50:07.740Z">
 <meta property="article:author" content="Chai Lang">
 <meta property="article:tag" content="热图, 斑图, 色度图">
 <meta name="twitter:card" content="summary">
@@ -228,7 +228,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-10-21 19:28:38 / 修改时间：19:36:02" itemprop="dateCreated datePublished" datetime="2020-10-21T19:28:38+08:00">2020-10-21</time>
+              <time title="创建时间：2020-10-21 19:28:38 / 修改时间：19:50:07" itemprop="dateCreated datePublished" datetime="2020-10-21T19:28:38+08:00">2020-10-21</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -274,7 +274,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>6.6k</span>
+              <span>6.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -294,8 +294,39 @@
 
       
         <h1 id="tikz的一些画图例子"><a href="#tikz的一些画图例子" class="headerlink" title="tikz的一些画图例子"></a>tikz的一些画图例子</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><strong>在此记录一些tikz绘制图形的例子，以方便后续使用。</strong></p>
+<a id="more"></a>
 <h2 id="例子1"><a href="#例子1" class="headerlink" title="例子1"></a>例子1</h2><p>代码如下：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">\documentclass{article}</span><br><span class="line">\usepackage{tikz}</span><br><span class="line">\begin{document}</span><br><span class="line">\usetikzlibrary{intersections}</span><br><span class="line">\begin{tikzpicture}[scale=3]</span><br><span class="line">%\clip[draw] (-0.8,-0.2) rectangle (1.1,1.75);</span><br><span class="line">\draw[-&gt;] (-1.5, 0) -- (1.5,0)node [right] {$x$} coordinate (x axis);</span><br><span class="line">\draw[-&gt;] (0, -1.5) -- (0,1.5)node [above] {$y$} coordinate (y axis);</span><br><span class="line">\draw (0,0) circle [radius=1cm];</span><br><span class="line"></span><br><span class="line">\draw[step=0.5cm,gray,very thin] (-1.4, -1.4) grid  (1.4,1.4) ;</span><br><span class="line">\filldraw[fill=green!20!white, draw=green!50!black] (0mm,0mm) -- (3mm,0mm) arc [start angle=0,end angle=30,radius=3mm] -- cycle;</span><br><span class="line">\draw (15:2mm) node {\color{green!50!black}$\alpha$};</span><br><span class="line">\draw[red,very thick] (30:1cm) -- node[left=1pt,fill=white]{$\sin\alpha$} (30:1cm |- x axis);</span><br><span class="line">\draw[blue,very thick] (30:1cm |- x axis) -- node[below=1pt,fill=white]{$\cos\alpha$} (0,0);</span><br><span class="line"></span><br><span class="line">\path[name path=upward line] (1,0) -- (1,1);</span><br><span class="line">\path[name path=sloped line] (0,0) -- (30:2cm);</span><br><span class="line">\draw[name intersections={of=upward line and sloped line, by=x}] [very thick, orange] (1,0) --</span><br><span class="line">      node[right=1pt,fill=white]{$\tan\alpha=\frac{\color{red}\sin\alpha}{\color{blue}\cos\alpha}$} (x);</span><br><span class="line"></span><br><span class="line">\draw (0,0) -- (x);</span><br><span class="line">\foreach \x/\xtext in {-1/-1, -0.5/-\frac{1}{2}, 1}</span><br><span class="line"> \draw (\x cm, 1pt) -- (\x cm, -1pt) node[anchor=north,fill=white] {$\xtext$};</span><br><span class="line"></span><br><span class="line">\foreach \y/\ytext in {-1,-0.5/-\frac{1}{2},0.5/\frac{1}{2},1}</span><br><span class="line"> \draw ( 1pt,\y cm) -- (-1pt, \y cm) node[anchor=east,fill=white] {$\ytext$};</span><br><span class="line"></span><br><span class="line">\end{tikzpicture}</span><br><span class="line">\end{document}</span><br></pre></td></tr></tbody></table></figure>
+<pre class="prettyprit lang-tex">\documentclass{article}
+\usepackage{tikz}
+\begin{document}
+\usetikzlibrary{intersections}
+\begin{tikzpicture}[scale=3]
+%\clip[draw] (-0.8,-0.2) rectangle (1.1,1.75);
+\draw[-&gt;] (-1.5, 0) -- (1.5,0)node [right] {$x$} coordinate (x axis);
+\draw[-&gt;] (0, -1.5) -- (0,1.5)node [above] {$y$} coordinate (y axis);
+\draw (0,0) circle [radius=1cm];
+
+\draw[step=0.5cm,gray,very thin] (-1.4, -1.4) grid  (1.4,1.4) ;
+\filldraw[fill=green!20!white, draw=green!50!black] (0mm,0mm) -- (3mm,0mm) arc [start angle=0,end angle=30,radius=3mm] -- cycle;
+\draw (15:2mm) node {\color{green!50!black}$\alpha$};
+\draw[red,very thick] (30:1cm) -- node[left=1pt,fill=white]{$\sin\alpha$} (30:1cm |- x axis);
+\draw[blue,very thick] (30:1cm |- x axis) -- node[below=1pt,fill=white]{$\cos\alpha$} (0,0);
+
+\path[name path=upward line] (1,0) -- (1,1);
+\path[name path=sloped line] (0,0) -- (30:2cm);
+\draw[name intersections={of=upward line and sloped line, by=x}] [very thick, orange] (1,0) --
+      node[right=1pt,fill=white]{$\tan\alpha=\frac{\color{red}\sin\alpha}{\color{blue}\cos\alpha}$} (x);
+
+\draw (0,0) -- (x);
+\foreach \x/\xtext in {-1/-1, -0.5/-\frac{1}{2}, 1}
+ \draw (\x cm, 1pt) -- (\x cm, -1pt) node[anchor=north,fill=white] {$\xtext$};
+
+\foreach \y/\ytext in {-1,-0.5/-\frac{1}{2},0.5/\frac{1}{2},1}
+ \draw ( 1pt,\y cm) -- (-1pt, \y cm) node[anchor=east,fill=white] {$\ytext$};
+
+\end{tikzpicture}
+\end{document}
+</pre>
 
 <p>生成图形如下：<br><img src="/images/example1.png" alt=""></p>
 <h2 id="例子2"><a href="#例子2" class="headerlink" title="例子2"></a>例子2</h2><p>代码如下：</p>
@@ -500,7 +531,7 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">26k</span>
+    <span title="站点总字数">25k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
