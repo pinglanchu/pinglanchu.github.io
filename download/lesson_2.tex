@@ -1,0 +1,55 @@
+\documentclass{article}
+\usepackage{tikz}
+\begin{document}
+\usetikzlibrary[arrows.meta,decorations.pathmorphing,backgrounds,positioning,fit,petri]
+\begin{tikzpicture}
+  [bend angle=45, node distance=1.3cm, on grid, auto,
+  place/.style={circle, draw=blue!50,fill=blue!20, thick, inner sep=0pt, minimum size=6mm},
+  red place/.style={place, draw=red!75, fill=red!20},
+  transition/.style={rectangle, draw=black!50,fill=black!20, thick, inner sep=0pt, minimum size=4mm},
+  every label/.style={red},
+  pre/.style={->, shorten >=1pt, >={Stealth[round]}, semithick},
+  post/.style={<-, shorten <=1pt, >={Stealth[round]}, semithick}]
+
+  \node [place, tokens=1] (a1) {};
+  \node [place] (a2) [below of=a1] {};
+  \node [place] (a3) [below of=a2, label=above:$\color{red}s\leq 3$] {};
+  \node [transition] (b1) [left of=a2] {};
+  \node [transition] (b2) [right of=a2] {};
+  \draw (a1) edge [pre, bend right] (b1) edge [post, bend left] node [auto] {2} (b2);
+  \draw (a3) edge [pre, bend right] (b2) edge [post, bend left] (b1);
+  \draw (a2) edge [post] (b1) edge [pre] (b2);
+
+  \node [place] (a4) [below of=a3] {};
+  \node [place] (a5) [below of=a4, tokens=1] {};
+  \node [transition] (b3) [left of=a4] {} edge [pre, bend left] (a3) edge [pre] (a4) edge [post, bend right] (a5);
+  \node [transition] (b4) [right of=a4] {} edge [pre, bend left] node [auto] {2} (a5) edge [post, bend right] (a3) edge [post] (a4);
+
+  \begin{scope}[xshift=6cm]
+    \node [place,tokens=1] (a1') {};
+    \node [place] (a2') [below of=a1'] {};
+    \node [transition] (b1') [left of=a2'] {} edge [post, bend left] node [auto,swap] {2} (a1') edge [pre] (a2');
+    \node [transition] (b2') [right of=a2'] {} edge [pre, bend right] (a1') edge [post] (a2');
+
+    \node [red place] (a31') [below of=a2', xshift=-5mm, label=left:$\color{red}s$] {} edge [post] (b1') edge [pre] (b2');
+    \node [red place, tokens=3] (a32') [below of=a2', xshift=5mm, label=right:$\color{red}\bar{s}$] {} edge [post] (b2') edge [pre] (b1');
+
+    \node [place] (a4') [below of =a31',xshift=5mm] {};
+    \node [transition] (b3') [left of=a4'] {} edge [pre] (a31') edge [pre] (a4') edge [post] (a32');
+    \node [transition] (b4') [right of=a4'] {} edge [pre] (a32') edge [post] (a31') edge [post] (a4');
+
+    \node [place,tokens=1] (a5') [below of=a4'] {} edge [post,bend right] node [auto] {2} (b4') edge [pre, bend left] (b3');
+  \end{scope}
+
+  \begin{scope}[on background layer]
+    \node (r1) [fill=black!10, rounded corners,fit=(a1)(a2)(b1)(b2)(a3)(a4)(b2)(b3)(a5)] {};
+    \node (r2) [fill=black!10, rounded corners,fit=(a1')(a2')(b1')(b2')(a31')(a32')(a4')(b2')(b3')(a5')] {};
+  \end{scope}
+
+  \draw [shorten >=1mm,-to,thick,decorate, decoration={snake,amplitude=0.4mm,segment length=2mm, pre=moveto,pre length=1mm,post length=2mm}]
+    (r1) -- (r2) node [above=1mm,midway,text width=3cm,align=center]
+    {replacement of the \textcolor{red}{capacity} by \textcolor{red}{two places}};
+
+
+\end{tikzpicture}
+\end{document} 

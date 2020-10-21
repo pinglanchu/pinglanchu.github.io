@@ -1,0 +1,19 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\begin{document}
+\usetikzlibrary{backgrounds, calc, intersections, through}
+\begin{tikzpicture}
+  \coordinate [label=left:\textcolor{blue}{$A$}] (A) at (0,0);
+  \coordinate [label=right:\textcolor{blue}{$B$}] (B) at (1.25, 0.25);
+  \draw (A) edge [blue] (B);
+  \node [name path=D,draw,label=left:$D$] (D) at (A) [circle through=(B)] {};
+  \node [name path=E,draw,label=right:$E$] (E) at (B) [circle through=(A)] {};
+  \path [name intersections={of=D and E,by={[label=above:\textcolor{red}{$C$}]C, [label=below:\textcolor{red}{$C'$}]C'}}];
+  \draw (C) edge [red] (A) edge[red] (B);
+  \foreach \point in {A,B,C}
+  \fill [black, opacity=0.5] (\point) circle (2pt);
+  \begin{pgfonlayer}{background}
+  \fill [orange!80] (A) -- (B) -- (C) -- cycle;
+  \end{pgfonlayer}
+\end{tikzpicture}
+\end{document}
