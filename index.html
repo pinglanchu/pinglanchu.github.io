@@ -197,6 +197,151 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.langr.top/2021/12/02/%E7%9F%A9%E9%98%B5%E8%BF%B9%E7%9A%84%E6%B1%82%E5%AF%BC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Chai Lang">
+      <meta itemprop="description" content="便胜却人间无数">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ChaiLang's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/12/02/%E7%9F%A9%E9%98%B5%E8%BF%B9%E7%9A%84%E6%B1%82%E5%AF%BC/" class="post-title-link" itemprop="url">矩阵迹的求导</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-12-02 15:19:18 / 修改时间：16:15:57" itemprop="dateCreated datePublished" datetime="2021-12-02T15:19:18+08:00">2021-12-02</time>
+            </span>
+
+          
+            <span id="/2021/12/02/%E7%9F%A9%E9%98%B5%E8%BF%B9%E7%9A%84%E6%B1%82%E5%AF%BC/" class="post-meta-item leancloud_visitors" data-flag-title="矩阵迹的求导" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/12/02/%E7%9F%A9%E9%98%B5%E8%BF%B9%E7%9A%84%E6%B1%82%E5%AF%BC/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/12/02/%E7%9F%A9%E9%98%B5%E8%BF%B9%E7%9A%84%E6%B1%82%E5%AF%BC/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>832</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="关于矩阵迹的一些求导法则"><a href="#关于矩阵迹的一些求导法则" class="headerlink" title="关于矩阵迹的一些求导法则"></a>关于矩阵迹的一些求导法则</h1><h2 id="一、迹的基本性质"><a href="#一、迹的基本性质" class="headerlink" title="一、迹的基本性质"></a>一、迹的基本性质</h2><ul>
+<li>线性性质：$tr(\sum_ic_iA_i)=\sum_ic_itr(A_i)$</li>
+<li>转置不变性：$tr(A)=tr(A^T)$</li>
+<li>轮换不变性 $tr(ABC)=tr(BCA)=tr(CAB)$</li>
+</ul>
+<p><strong>注意：轮换不变性不等于交换性，例如$tr(ABC)\neq tr(ACB)$</strong></p>
+<h2 id="二、迹的求导规则"><a href="#二、迹的求导规则" class="headerlink" title="二、迹的求导规则"></a>二、迹的求导规则</h2><ol>
+<li><p>$\dfrac{\partial tr(AB)}{\partial A}=\dfrac{\partial tr(BA)}{\partial A}=B^T$</p>
+</li>
+<li><p>$\dfrac{\partial tr(A^TB)}{\partial A}=\dfrac{\partial tr(BA^T)}{\partial A}=B$</p>
+</li>
+<li><p>$\dfrac{\partial tr(A^TBA)}{\partial A}=BA+B^TA$</p>
+</li>
+<li><p>$\dfrac{\partial (ABA^T)}{\partial A}=AB^T+AB$</p>
+</li>
+<li><p>$\dfrac{\partial tr(AXBXC^T)}{\partial X}=A^TCX^TB^T+B^TX^TA^TC$</p>
+</li>
+<li><p>$\dfrac{\partial tr(AXBX)}{\partial X}=A^TX^TB^T+B^TX^TA^T$</p>
+</li>
+<li><p>$\dfrac{\partial tr(AXBX^T)}{\partial X}=A^TXB^T+AXB​$</p>
+</li>
+<li><p>$\dfrac{\partial tr(A^TXB^T)}{\partial X}=\dfrac{\partial tr(AX^TB)}{\partial X}=AB$</p>
+</li>
+<li><p>$\dfrac{\partial tr(A^TXB)}{\partial X}=AB^T$</p>
+</li>
+<li><p>$\dfrac{\partial tr(A^TX^TXA)}{\partial X}=2XAA^T$</p>
+</li>
+<li><p>$\dfrac{\partial tr[(XA-B)^T(XA-B)]}{\partial X}=2(XA-B)A^T$</p>
+<p><strong>核心公式：$\nabla tr(XAX^TB)=B^TXA^T+BXA$</strong></p>
+<p>​</p>
+<p>​</p>
+<p>​</p>
+</li>
+</ol>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.langr.top/2021/11/09/%E5%9C%A8sublime%20text3%E4%B8%AD%E4%BD%BF%E7%94%A8python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1060,7 +1205,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1122,13 +1267,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">25k</span>
+    <span title="站点总字数">26k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">23 分钟</span>
+    <span title="站点阅读时长">24 分钟</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
