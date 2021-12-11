@@ -32,7 +32,7 @@
 <meta property="og:description" content="关于矩阵迹的一些求导法则一、迹的基本性质 线性性质：$tr(\sum_ic_iA_i)&#x3D;\sum_ic_itr(A_i)$ 转置不变性：$tr(A)&#x3D;tr(A^T)$ 轮换不变性 $tr(ABC)&#x3D;tr(BCA)&#x3D;tr(CAB)$  注意：轮换不变性不等于交换性，例如$tr(ABC)\neq tr(ACB)$ 二、范数与迹的关系 $|X|\mathcal{F}^2&#x3D;tr(X^TX)&#x3D;\sum{i&#x3D;">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-12-02T07:19:18.396Z">
-<meta property="article:modified_time" content="2021-12-11T07:20:06.344Z">
+<meta property="article:modified_time" content="2021-12-11T07:39:29.269Z">
 <meta property="article:author" content="Chai Lang">
 <meta property="article:tag" content="深度学习，python，复杂网络， 阅读">
 <meta name="twitter:card" content="summary">
@@ -230,7 +230,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-12-11 15:20:06" itemprop="dateModified" datetime="2021-12-11T15:20:06+08:00">2021-12-11</time>
+                <time title="修改时间：2021-12-11 15:39:29" itemprop="dateModified" datetime="2021-12-11T15:39:29+08:00">2021-12-11</time>
               </span>
 
           
@@ -267,7 +267,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>901</span>
+              <span>902</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -293,7 +293,7 @@
 </ul>
 <p><strong>注意：轮换不变性不等于交换性，例如$tr(ABC)\neq tr(ACB)$</strong></p>
 <h2 id="二、范数与迹的关系"><a href="#二、范数与迹的关系" class="headerlink" title="二、范数与迹的关系"></a>二、范数与迹的关系</h2><ol>
-<li>$|X|<em>\mathcal{F}^2=tr(X^TX)=\sum</em>{i=1}^m\sum_{j=1}^na_{ij}^2$</li>
+<li>$|X|<em>\mathcal{F}^2=tr(X^TX)=\sum</em>{i=1}^m\sum_{j=1}^na_{ij}^2​$</li>
 </ol>
 <h2 id="三、迹的求导规则"><a href="#三、迹的求导规则" class="headerlink" title="三、迹的求导规则"></a>三、迹的求导规则</h2><ol>
 <li><p>$\dfrac{\partial tr(AB)}{\partial A}=\dfrac{\partial tr(BA)}{\partial A}=B^T$</p>
@@ -600,6 +600,61 @@
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
