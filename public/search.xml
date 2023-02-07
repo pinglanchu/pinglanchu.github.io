@@ -4,19 +4,6 @@
   
     
     <entry>
-      <title>主页名字</title>
-      <link href="/2023/02/07/index.html/"/>
-      <url>/2023/02/07/index.html/</url>
-      
-        <content type="html"><![CDATA[<p>我是一个主页！！</p><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>矩阵迹的求导</title>
       <link href="/2021/12/02/%E7%9F%A9%E9%98%B5%E8%BF%B9%E7%9A%84%E6%B1%82%E5%AF%BC/"/>
       <url>/2021/12/02/%E7%9F%A9%E9%98%B5%E8%BF%B9%E7%9A%84%E6%B1%82%E5%AF%BC/</url>
